@@ -77,10 +77,10 @@ public class Okno extends JPanel {
 
                 if (elements.get(licznik) ) {
 
-                    g.drawImage(black, i, j, this);
+                    g.drawImage(black, j, i, this);
                 } else {
 
-                    g.drawImage(white, i, j, this);
+                    g.drawImage(white, j, i, this);
                 }
 
                 licznik++;
@@ -95,12 +95,17 @@ public class Okno extends JPanel {
         @Override
         public void mouseClicked(MouseEvent e) {
 
-            Point lokalizacja = MouseInfo.getPointerInfo().getLocation();
+            int licznik = 0;
+            Point lokalizacja = getMousePosition();
 
-            double x = lokalizacja.getX();
-            double y = lokalizacja.getX();
+            int x = ( (int) ( lokalizacja.getX() / 80 ) ) ;
+            int y = ( (int) ( lokalizacja.getY() / 80 ) ) ;
 
+            licznik += Math.sqrt( elements.size()) * y + x;
 
+            elements.set( licznik, true);
+
+            repaint();
         }
 
         @Override
