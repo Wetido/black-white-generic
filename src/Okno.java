@@ -2,8 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 public class Okno extends JPanel {
@@ -11,11 +11,15 @@ public class Okno extends JPanel {
     private Image black;
     private Image white;
     private ArrayList<Boolean> elements = new ArrayList<>();
+    private ArrayList<Boolean> pattern = new ArrayList<>();
     private JButton next = new JButton("Gotowy");
-    private boolean rysowanie = false;
 
-    private final int SIZE_X = 480;
-    private final int SIZE_Y = 520;
+    private Gotowy gotowy = new Gotowy();
+    private Sprawdzanie sprawdzanie = new Sprawdzanie();
+    private Rysowanie rysowanie = new Rysowanie();
+
+    private final int SIZE_X = 320;
+    private final int SIZE_Y = 360;
     private final int SIZE = 80;
 
 
@@ -24,11 +28,11 @@ public class Okno extends JPanel {
 
 
         setLayout(null);
-        next.setBounds(190,485,100,30);
+        next.setBounds(SIZE_X /3 ,SIZE_Y - 35,100,30);
 
-        next.addMouseListener( new Gotowy() );
+        next.addMouseListener( gotowy );
 
-        for (int i = 0; i < 36; i++) {
+        for (int i = 0; i < Math.pow( SIZE_X / 80, 2.0) ; i++) {
 
             elements.add(false) ;
         }
@@ -39,7 +43,6 @@ public class Okno extends JPanel {
         loadImage();
         generate();
         repaint();
-
 
     }
 
@@ -73,7 +76,7 @@ public class Okno extends JPanel {
 
         for (int i = 0; i < SIZE_X; i += SIZE) {
 
-            for (int j = 0; j < 480; j += SIZE) {
+            for (int j = 0; j < SIZE_Y - 40; j += SIZE) {
 
                 if (elements.get(licznik) ) {
 
@@ -89,21 +92,60 @@ public class Okno extends JPanel {
 
     }
 
+    private class Sprawdzanie implements MouseListener {
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+
+            if ( pattern.equals( elements ) ) System.out.println( "Dobrze" );
+            else System.out.println( "Zle" );
+
+            generate();
+            repaint();
+
+            removeMouseListener( rysowanie );
+            next.removeMouseListener( sprawdzanie );
+            next.addMouseListener( gotowy );
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+
+        }
+    }
 
     private class Rysowanie implements MouseListener {
 
         @Override
         public void mouseClicked(MouseEvent e) {
 
-            int licznik = 0;
             Point lokalizacja = getMousePosition();
 
-            int x = ( (int) ( lokalizacja.getX() / 80 ) ) ;
-            int y = ( (int) ( lokalizacja.getY() / 80 ) ) ;
+            int x =  ( (int) lokalizacja.getX() / 80 )  ;
+            int y =  ( (int) lokalizacja.getY() / 80 )  ;
 
-            licznik += Math.sqrt( elements.size()) * y + x;
+            int licznik = ( int )( Math.sqrt( elements.size()) * y + x );
 
-            elements.set( licznik, true);
+            if( elements.get( licznik ) ) {
+                elements.set(licznik, false);
+            } else
+                elements.set( licznik , true );
+
 
             repaint();
         }
@@ -135,15 +177,19 @@ public class Okno extends JPanel {
         @Override
         public void mouseClicked(MouseEvent e) {
 
+            pattern = (ArrayList<Boolean>) elements.clone();
 
             for (int i = 0; i < elements.size(); i++) {
 
                 elements.set(i, false );
             }
 
-            repaint();
-            addMouseListener( new Rysowanie() );
 
+            next.removeMouseListener( gotowy );
+            next.addMouseListener( sprawdzanie );
+            addMouseListener( rysowanie );
+
+            repaint();
         }
 
         @Override
