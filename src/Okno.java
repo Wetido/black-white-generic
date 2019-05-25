@@ -134,6 +134,11 @@ public class Okno extends JPanel {
         @Override
         public void mouseClicked(MouseEvent e) {
 
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+
             Point lokalizacja = getMousePosition();
 
             int x =  ( (int) lokalizacja.getX() / 80 )  ;
@@ -148,11 +153,6 @@ public class Okno extends JPanel {
 
 
             repaint();
-        }
-
-        @Override
-        public void mousePressed(MouseEvent e) {
-
         }
 
         @Override
@@ -194,6 +194,7 @@ public class Okno extends JPanel {
 
         @Override
         public void mousePressed(MouseEvent e) {
+
 
         }
 
